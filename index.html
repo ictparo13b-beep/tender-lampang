@@ -2,83 +2,268 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>ข่าวประกาศราคา สบอ.13 สาขาลำปาง</title>
 
 <style>
+
 body{
-    font-family:tahoma,sans-serif;
+    margin:0;
+    font-family:Tahoma,sans-serif;
+    background:#f5f7fa;
+}
+
+header{
+    background:#006400;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+    font-size:28px;
+}
+
+header p{
+    margin-top:8px;
+}
+
+.container{
     max-width:1200px;
     margin:auto;
     padding:20px;
 }
-h1{
-    color:#006400;
+
+.toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
 }
+
+input{
+    flex:1;
+    min-width:250px;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#006400;
+    color:white;
+}
+
+.stats{
+    margin-bottom:15px;
+    color:#555;
+}
+
 .card{
-    border:1px solid #ddd;
-    border-radius:8px;
+    background:white;
+    border-radius:10px;
     padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,.08);
+}
+
+.card h3{
+    margin-top:0;
+    color:#0b4f0b;
+}
+
+.date{
+    color:#777;
+    font-size:13px;
     margin-bottom:10px;
 }
-.date{
-    color:#666;
-    font-size:13px;
+
+.files{
+    margin-top:10px;
 }
+
+.files a{
+    display:inline-block;
+    margin:4px;
+    padding:8px 12px;
+    background:#0d6efd;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+}
+
+.files a:hover{
+    opacity:.9;
+}
+
+.loading{
+    text-align:center;
+    padding:40px;
+}
+
+footer{
+    text-align:center;
+    padding:20px;
+    color:#666;
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>ข่าวประกาศราคา<br>สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</h1>
+<header>
+<h1>ข่าวประกาศราคา</h1>
+<p>สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</p>
+</header>
 
-<div id="news">
+<div class="container">
+
+<div class="toolbar">
+
+<input
+type="text"
+id="search"
+placeholder="ค้นหาประกาศ..."
+>
+
+<button onclick="loadData()">
+รีเฟรช
+</button>
+
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div id="news" class="loading">
 กำลังโหลดข้อมูล...
 </div>
 
+</div>
+
+<footer>
+ข้อมูลจากระบบ TenderNews กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช
+</footer>
+
 <script>
 
-fetch(
+let allData=[];
+
+async function loadData(){
+
+document.getElementById('news').innerHTML='กำลังโหลดข้อมูล...';
+
+try{
+
+const response=await fetch(
 'https://portal.dnp.go.th/TenderNews/getTenderNewsList',
 {
-    method:'POST',
-    headers:{
-        'Content-Type':'application/x-www-form-urlencoded'
-    },
-    body:'groupId=34&page=1'
+method:'POST',
+headers:{
+'Content-Type':'application/x-www-form-urlencoded'
+},
+body:'groupId=34&page=1'
 }
-)
-.then(r=>r.json())
-.then(data=>{
+);
 
-    let html='';
+const data=await response.json();
 
-    data.forEach(item=>{
+data.sort((a,b)=>b.id-a.id);
 
-        html += `
-        <div class="card">
-            <h3>${item.name || '-'}</h3>
+allData=data;
 
-            <div class="date">
-            วันที่ประกาศ :
-            ${item.startDate || '-'}
-            </div>
+render();
 
-            <div class="date">
-            สิ้นสุด :
-            ${item.endDate || '-'}
-            </div>
-        </div>
-        `;
-    });
+}
+catch(error){
 
-    document.getElementById('news').innerHTML=html;
+document.getElementById('news').innerHTML=
+'ไม่สามารถโหลดข้อมูลได้';
 
-})
-.catch(err=>{
-    document.getElementById('news').innerHTML=
-    'ไม่สามารถโหลดข้อมูลได้';
+console.error(error);
+
+}
+
+}
+
+function render(){
+
+const keyword=
+document.getElementById('search')
+.value
+.toLowerCase();
+
+const filtered=
+allData.filter(item=>
+(item.name||'')
+.toLowerCase()
+.includes(keyword)
+);
+
+document.getElementById('stats').innerHTML=
+'พบ '+filtered.length+' รายการ';
+
+let html='';
+
+filtered.forEach(item=>{
+
+html+=`
+<div class="card">
+
+<h3>${item.name||'-'}</h3>
+
+<div class="date">
+วันที่ประกาศ :
+${item.startDate||'-'}
+&nbsp;&nbsp;|&nbsp;&nbsp;
+สิ้นสุด :
+${item.endDate||'-'}
+</div>
+`;
+
+if(item.documentFile &&
+item.documentFile.length){
+
+html+=`<div class="files">`;
+
+item.documentFile.forEach(file=>{
+
+const pdfUrl=
+`https://portal.dnp.go.th/FileSystem/download/?uuid=${file.physicalName}${file.fileType}`;
+
+html+=`
+<a
+href="${pdfUrl}"
+target="_blank">
+📄 ${file.documentName || 'เปิดเอกสาร'}
+</a>
+`;
+
 });
+
+html+=`</div>`;
+
+}
+
+html+=`</div>`;
+
+});
+
+document.getElementById('news').innerHTML=html;
+
+}
+
+document
+.getElementById('search')
+.addEventListener('input',render);
+
+loadData();
 
 </script>
 
