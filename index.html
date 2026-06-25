@@ -1,17 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
 <meta charset="utf-8">
-<title>ประกาศจัดซื้อจัดจ้าง สบอ.13 ลำปาง</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ข่าวประกาศราคา สบอ.13 สาขาลำปาง</title>
 
-<script>
-window.location.replace("https://portal.dnp.go.th/TenderNews");
-</script>
-
+<style>
+body{
+    font-family:tahoma,sans-serif;
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+h1{
+    color:#006400;
+}
+.card{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:15px;
+    margin-bottom:10px;
+}
+.date{
+    color:#666;
+    font-size:13px;
+}
+</style>
 </head>
+
 <body>
 
-<h2>กำลังเปิดระบบประกาศจัดซื้อจัดจ้าง...</h2>
+<h1>ข่าวประกาศราคา<br>สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</h1>
+
+<div id="news">
+กำลังโหลดข้อมูล...
+</div>
+
+<script>
+
+fetch(
+'https://portal.dnp.go.th/TenderNews/getTenderNewsList',
+{
+    method:'POST',
+    headers:{
+        'Content-Type':'application/x-www-form-urlencoded'
+    },
+    body:'groupId=34&page=1'
+}
+)
+.then(r=>r.json())
+.then(data=>{
+
+    let html='';
+
+    data.forEach(item=>{
+
+        html += `
+        <div class="card">
+            <h3>${item.name || '-'}</h3>
+
+            <div class="date">
+            วันที่ประกาศ :
+            ${item.startDate || '-'}
+            </div>
+
+            <div class="date">
+            สิ้นสุด :
+            ${item.endDate || '-'}
+            </div>
+        </div>
+        `;
+    });
+
+    document.getElementById('news').innerHTML=html;
+
+})
+.catch(err=>{
+    document.getElementById('news').innerHTML=
+    'ไม่สามารถโหลดข้อมูลได้';
+});
+
+</script>
 
 </body>
 </html>
