@@ -3,268 +3,346 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>ข่าวประกาศราคา สบอ.13 สาขาลำปาง</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+    :root {
+        --primary-color: #1b4d3e; /* สีเขียวเข้มป่าไม้ สุภาพ */
+        --primary-hover: #143a2f;
+        --secondary-color: #2e7d32;
+        --bg-color: #f4f6f8;
+        --text-color: #333333;
+        --text-muted: #666666;
+        --card-bg: #ffffff;
+        --accent-blue: #0288d1;
+    }
 
-body{
-    margin:0;
-    font-family:Tahoma,sans-serif;
-    background:#f5f7fa;
-}
+    * {
+        box-sizing: border-box;
+    }
 
-header{
-    background:#006400;
-    color:white;
-    padding:20px;
-    text-align:center;
-}
+    body {
+        margin: 0;
+        font-family: 'Sarabun', Tahoma, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
 
-header h1{
-    margin:0;
-    font-size:28px;
-}
+    header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-header p{
-    margin-top:8px;
-}
+    header h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
 
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:20px;
-}
+    header p {
+        margin: 10px 0 0 0;
+        font-size: 18px;
+        opacity: 0.9;
+        font-weight: 300;
+    }
 
-.toolbar{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-}
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 30px 20px;
+    }
 
-input{
-    flex:1;
-    min-width:250px;
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:6px;
-}
+    /* ส่วนควบคุมแถบค้นหา */
+    .toolbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
 
-button{
-    padding:10px 16px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    background:#006400;
-    color:white;
-}
+    input[type="text"] {
+        flex: 1;
+        min-width: 280px;
+        padding: 12px 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
 
-.stats{
-    margin-bottom:15px;
-    color:#555;
-}
+    input[type="text"]:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
 
-.card{
-    background:white;
-    border-radius:10px;
-    padding:15px;
-    margin-bottom:15px;
-    box-shadow:0 2px 5px rgba(0,0,0,.08);
-}
+    button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: white;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        transition: background 0.2s ease, transform 0.1s ease;
+    }
 
-.card h3{
-    margin-top:0;
-    color:#0b4f0b;
-}
+    button:hover {
+        background-color: var(--primary-hover);
+    }
 
-.date{
-    color:#777;
-    font-size:13px;
-    margin-bottom:10px;
-}
+    button:active {
+        transform: scale(0.98);
+    }
 
-.files{
-    margin-top:10px;
-}
+    .stats {
+        margin-bottom: 20px;
+        color: var(--text-muted);
+        font-size: 15px;
+        font-weight: 500;
+        padding-left: 5px;
+    }
 
-.files a{
-    display:inline-block;
-    margin:4px;
-    padding:8px 12px;
-    background:#0d6efd;
-    color:white;
-    text-decoration:none;
-    border-radius:5px;
-}
+    /* จัดโครงสร้างการแสดงผลแบบ Grid */
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+        gap: 20px;
+    }
 
-.files a:hover{
-    opacity:.9;
-}
+    @media (max-width: 768px) {
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+        header h1 { font-size: 26px; }
+        header p { font-size: 15px; }
+    }
 
-.loading{
-    text-align:center;
-    padding:40px;
-}
+    /* สไตล์กล่องข้อความประกาศ */
+    .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        border: 1px solid #edf2f7;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-footer{
-    text-align:center;
-    padding:20px;
-    color:#666;
-}
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
 
+    .card h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: var(--primary-color);
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    /* ส่วนของวันที่ */
+    .date-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        color: var(--text-muted);
+        font-size: 13.5px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .date-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* ส่วนของปุ่มดาวน์โหลดไฟล์ */
+    .files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .files a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background-color: #f0f7ff;
+        color: var(--accent-blue);
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1px solid #d0e7ff;
+        transition: all 0.2s ease;
+    }
+
+    .files a:hover {
+        background-color: var(--accent-blue);
+        color: white;
+        border-color: var(--accent-blue);
+    }
+
+    /* สถานะกำลังโหลด / ค้นหาไม่พบ */
+    .loading, .no-data {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px;
+        background: white;
+        border-radius: 12px;
+        color: var(--text-muted);
+        font-size: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    footer {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-muted);
+        font-size: 13px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 40px;
+    }
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>ข่าวประกาศราคา</h1>
-<p>สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</p>
+    <h1>ข่าวประกาศราคา</h1>
+    <p>สำนักบริหารพื้นที่อนุรักษ์ที่ 13 สาขาลำปาง</p>
 </header>
 
 <div class="container">
 
-<div class="toolbar">
+    <div class="toolbar">
+        <input type="text" id="search" placeholder="พิมพ์คำค้นหา เช่น ชื่อโครงการ, เลขที่ประกาศ...">
+        <button onclick="loadData()">รีเฟรชข้อมูล</button>
+    </div>
 
-<input
-type="text"
-id="search"
-placeholder="ค้นหาประกาศ..."
->
+    <div class="stats" id="stats">กำลังเตรียมข้อมูล...</div>
 
-<button onclick="loadData()">
-รีเฟรช
-</button>
-
-</div>
-
-<div class="stats" id="stats"></div>
-
-<div id="news" class="loading">
-กำลังโหลดข้อมูล...
-</div>
+    <div id="news" class="news-grid">
+        <div class="loading">กำลังโหลดข้อมูลจากระบบ...</div>
+    </div>
 
 </div>
 
 <footer>
-ข้อมูลจากระบบ TenderNews กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช
+    ข้อมูลเชื่อมโยงจากระบบ TenderNews กรมอุทยานแห่งชาติ สัตว์ป่า และพันธุ์พืช
 </footer>
 
 <script>
+let allData = [];
 
-let allData=[];
+async function loadData() {
+    const newsContainer = document.getElementById('news');
+    newsContainer.innerHTML = '<div class="loading">กำลังโหลดข้อมูล...</div>';
+    
+    try {
+        const response = await fetch(
+            'https://portal.dnp.go.th/TenderNews/getTenderNewsList',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'groupId=34&page=1'
+            }
+        );
 
-async function loadData(){
+        const data = await response.json();
+        data.sort((a, b) => b.id - a.id);
+        allData = data;
+        render();
 
-document.getElementById('news').innerHTML='กำลังโหลดข้อมูล...';
-
-try{
-
-const response=await fetch(
-'https://portal.dnp.go.th/TenderNews/getTenderNewsList',
-{
-method:'POST',
-headers:{
-'Content-Type':'application/x-www-form-urlencoded'
-},
-body:'groupId=34&page=1'
-}
-);
-
-const data=await response.json();
-
-data.sort((a,b)=>b.id-a.id);
-
-allData=data;
-
-render();
-
-}
-catch(error){
-
-document.getElementById('news').innerHTML=
-'ไม่สามารถโหลดข้อมูลได้';
-
-console.error(error);
-
+    } catch (error) {
+        newsContainer.innerHTML = '<div class="no-data" style="color: #d32f2f;">ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้งในภายหลัง</div>';
+        document.getElementById('stats').innerHTML = 'เกิดข้อผิดพลาดในการดึงข้อมูล';
+        console.error(error);
+    }
 }
 
+function render() {
+    const keyword = document.getElementById('search').value.toLowerCase();
+    
+    const filtered = allData.filter(item => 
+        (item.name || '').toLowerCase().includes(keyword)
+    );
+
+    document.getElementById('stats').innerHTML = `พบทั้งหมด <strong>${filtered.length}</strong> รายการ`;
+
+    if (filtered.length === 0) {
+        document.getElementById('news').innerHTML = '<div class="no-data">ไม่พบข้อมูลประกาศที่ค้นหา</div>';
+        return;
+    }
+
+    let html = '';
+
+    filtered.forEach(item => {
+        html += `
+        <div class="card">
+            <div>
+                <h3>${item.name || '-'}</h3>
+                <div class="date-container">
+                    <div class="date-item">
+                        <span>📅 เริ่มประกาศ:</span> <strong>${item.startDate || '-'}</strong>
+                    </div>
+                    <div class="date-item">
+                        <span>🛑 สิ้นสุด:</span> <strong>${item.endDate || '-'}</strong>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        if (item.documentFile && item.documentFile.length) {
+            html += `<div class="files">`;
+            item.documentFile.forEach(file => {
+                const pdfUrl = `https://portal.dnp.go.th/FileSystem/download/?uuid=${file.physicalName}${file.fileType}`;
+                html += `
+                    <a href="${pdfUrl}" target="_blank" title="${file.documentName || 'ดาวน์โหลดเอกสาร'}">
+                        📄 ${file.documentName || 'เปิดเอกสารแนบ'}
+                    </a>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+    });
+
+    document.getElementById('news').innerHTML = html;
 }
 
-function render(){
+document.getElementById('search').addEventListener('input', render);
 
-const keyword=
-document.getElementById('search')
-.value
-.toLowerCase();
-
-const filtered=
-allData.filter(item=>
-(item.name||'')
-.toLowerCase()
-.includes(keyword)
-);
-
-document.getElementById('stats').innerHTML=
-'พบ '+filtered.length+' รายการ';
-
-let html='';
-
-filtered.forEach(item=>{
-
-html+=`
-<div class="card">
-
-<h3>${item.name||'-'}</h3>
-
-<div class="date">
-วันที่ประกาศ :
-${item.startDate||'-'}
-&nbsp;&nbsp;|&nbsp;&nbsp;
-สิ้นสุด :
-${item.endDate||'-'}
-</div>
-`;
-
-if(item.documentFile &&
-item.documentFile.length){
-
-html+=`<div class="files">`;
-
-item.documentFile.forEach(file=>{
-
-const pdfUrl=
-`https://portal.dnp.go.th/FileSystem/download/?uuid=${file.physicalName}${file.fileType}`;
-
-html+=`
-<a
-href="${pdfUrl}"
-target="_blank">
-📄 ${file.documentName || 'เปิดเอกสาร'}
-</a>
-`;
-
-});
-
-html+=`</div>`;
-
-}
-
-html+=`</div>`;
-
-});
-
-document.getElementById('news').innerHTML=html;
-
-}
-
-document
-.getElementById('search')
-.addEventListener('input',render);
-
+// เรียกใช้งานครั้งแรกเมื่อโหลดหน้าเว็บ
 loadData();
-
 </script>
 
 </body>
